@@ -1,0 +1,171 @@
+<div class="flex flex-col w-full bg-card mt-0" *ngIf="project.length != 0">
+    <!-- Column -->
+    <div class="flex flex-col md:flex-col border-r xs:full pl-1 mb-2">
+        <form [formGroup]="projectForm" (ngSubmit)="onSearch()">
+            <div class="flex items-start md:flex-row sm:pl-1 md:p-1 p-0">
+                <mat-form-field class="text-sm fuse-mat-no-subscript md:w-full w-50 ml-1 sm:w-90 mt-2 p-0 md:p-0">
+                    <mat-label>Project and Application</mat-label>
+                    <mat-select (selectionChange)="onChangeProject($event)" required formControlName="project">
+                        <div *ngFor="let project of project">
+                            <mat-option [value]="project" style="height: auto;">
+                                <span>{{project.projectNickName}}</span> - <span class="font-bold">{{project.applicationNickName}}</span>  </mat-option>
+                        </div>
+                        <div *ngIf="project.length === 0">
+                            <mat-option>No Projects Assigned</mat-option>
+                        </div>
+                    </mat-select>
+                    <mat-icon matPrefix class="icon-size-5 hidden md:block" [svgIcon]="'feather:file-text'"></mat-icon>
+                </mat-form-field>
+
+                <mat-form-field class="text-sm fuse-mat-no-subscript md:ml-3 md:w-full w-40 sm:w-90 sm:ml-2 mt-2 ml-2 p-0 md:p-0">
+                    <mat-label>Sprint</mat-label>
+                    <mat-select (selectionChange)="onChangeSprint($event)" required formControlName="sprint"
+                        [disabled]="projectForm.controls['project'].invalid" [matTooltip]=" projectForm.controls['project'].invalid == true ? 'Select Project': '' ">
+                        <mat-option *ngFor="let sprint of sprints" [value]="sprint">{{ sprint.sprintName }} - ({{ sprint.startDate | date: "MMM d" }}-{{ sprint.endDate | date: "MMM d" }})
+                        </mat-option>
+                        <mat-option *ngIf="sprints.length === 0">No Sprints</mat-option>
+                        <!-- <mat-option class="bg-primary text-on-primary" (click)="openDialog()">
+                            <button>
+                                <mat-icon class="text-white" [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                <span class="ml-2">Add Sprint</span>
+                            </button>
+                        </mat-option> -->
+                    </mat-select>
+                    <mat-icon matPrefix class="icon-size-5 hidden md:block" [svgIcon]="'heroicons_outline:paper-clip'">
+                    </mat-icon>
+                </mat-form-field>
+
+                <div
+                    class="flex flex-auto justify-between  md:ml-2 mt-4 p-3 md:mt-4 md:w-60 m-auto overflow-hidden items-end">
+                    <div class="hidden md:block md:mt-2">
+                        <button (click)="onSearch()" mat-flat-button [color]="'primary'"
+                            [disabled]="!projectForm.valid || isPresent">
+                            Search
+                        </button>
+                    </div>
+                    <div class="md:hidden pt-5">
+                        <button (click)="onSearch()" [disabled]="!projectForm.valid || isPresent">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- <button  (click)="clearSearch()" [matTooltip]="'Clear'" *ngIf="projectForm.valid  ">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-10 h-10">
+                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                          </svg>
+                    </button> -->
+                </div>
+            </div>
+            <!-- <div *ngIf="project.length === 0" class="font-bold ml-2 text-md text-red-500">
+            </div> -->
+        </form>
+        <div class="flex">
+            <div class="flex flex-col sm:flex-row md:flex-row" *ngIf="searchDisable && showDisable1 && monthlyHours">
+                <div class="text-md font-medium text-black-600 dark:text-black-500 pt-0 ml-1 md:pt-1 md:ml-2 sm:pt-1 sm:ml-3">
+                    Target Hours for current month: {{ tragetWorkingHours }} hrs
+                </div>
+                <span class="text-md font-medium text-green-600 dark:text-green-500 ml-1 mt-1 md:pt-0 md:ml-2 sm:pt-0 sm:ml-7">
+                    Worked Hours for current month: {{ totalWorkingHours }} hrs
+                </span>
+            </div>
+            <div class="flex xs:flex-col md:flex-row" *ngIf="!disablehours && showDisable1">
+                <div class="text-md font-medium text-black-600 dark:text-black-500 pt-0 ml-1 md:pt-1 md:ml-2 sm:pt-1 sm:ml-3" [hidden]="disablehours">
+                    Target Hours for Selected Sprint: {{ targetHours }} hrs
+                </div>
+                <div class="text-md font-medium text-green-600 dark:text-green-500 ml-1 mt-1 md:pt-0 md:ml-2 sm:pt-0 sm:ml-7" [hidden]="disablehours">
+                    Worked Hours for Selected Sprint: {{ workingHours }} hrs
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col w-full">
+        <div class="flex flex-col">
+            <!-- Products list -->
+            <div class="flex flex-col">
+                <ng-container>
+                    <ng-container>
+                        <div class="grid overflow-y-auto">
+                            <!-- ---Header--- -->
+                            <div class="inventory-grid z-10 h-12 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-white bg-primary dark:bg-black dark:bg-opacity-5"
+                                matSort>
+                                <div class="md:block" [mat-sort-header]="'userstoryName'"
+                                    (click)="getAllTaskUserstoryName('userstory_name')">
+                                    User<span class="demo">.</span>Story
+                                </div>
+                                <div class="md:block" [mat-sort-header]="'date'"
+                                    (click)="getAllTaskUserstoryName('date')">
+                                    Date
+                                </div>
+                                <div class="sm:block" [mat-sort-header]="'taskName'"
+                                    (click)="getAllTaskUserstoryName('task_name')">
+                                    Activity
+                                </div>
+                                <div class="md:block" [mat-sort-header]="'efforts'"
+                                    (click)="getAllTaskUserstoryName('efforts')">
+                                    Effort<span class="demo">.</span>Spent
+                                </div>
+                            </div>
+                            <!-- Rows -->
+                            <ng-container>
+                                <ng-container name="tasks" ngDefaultControl *ngIf="(count != 0 && tasks.length != 0) || viewDetail;else noTasks">
+                                    <ng-container>
+                                        <ng-container *ngFor="let task of tasks">
+                                            <div class="inventory-grid h-12 cursor-pointer grid items-center gap-4 py-3 px-6 md:px-8 border-b"
+                                                *ngIf="selectedTask != task">
+                                                <div class="text-sm" matTooltip="{{ task.userstoryDescription }}">
+                                                    <span>
+                                                        {{ task.userstoryName }}
+                                                    </span>
+                                                </div>
+                                                <div class="text-sm">
+                                                    <span>
+                                                        {{ task.date | date: "mediumDate" }}
+                                                    </span>
+                                                </div>
+                                                <div class="text-sm overflow-hidden">
+                                                    <span>
+                                                        {{ task.taskName }}
+                                                    </span>
+                                                </div>
+
+                                                <div class="text-sm">
+                                                    <span>  {{task.efforts.split(":")[0] + ":" + task.efforts.split(":")[1]}} hrs</span>
+                                                </div>
+                                            </div>
+                                            <div class="grid">
+                                                <ng-container *ngIf="selectedTask === task">
+                                                    <ng-container *ngTemplateOutlet="taskDetailsTemplate; context: { $implicit: task }">
+                                                    </ng-container>
+                                                </ng-container>
+                                            </div>
+                                        </ng-container>
+                                        <!-- No contacts -->
+                                    </ng-container>
+                                </ng-container>
+
+                                <ng-template #noTasks>
+                                    <div
+                                        class="p-8 sm:p-16 border-t text-medium font-medium tracking-tight text-center">
+                                        There are no tasks!
+                                    </div>
+                                </ng-template>
+                            </ng-container>
+                        </div>
+                        <mat-paginator class="pagination" *ngIf="count != 0" [length]="count" (page)="change($event)"
+                            [pageSizeOptions]="[10, 20, 50]" aria-label="Select page of users">
+                        </mat-paginator>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="project.length == 0">
+    <app-project-assignment [assignedProjectLength]="project.length"></app-project-assignment>
+</div>

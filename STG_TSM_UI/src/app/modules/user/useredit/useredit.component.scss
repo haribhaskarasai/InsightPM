@@ -1,0 +1,84 @@
+.container{
+    display:flex;
+    flex-direction: row;
+    margin-right: 30px;
+    margin-bottom: 10px;
+}
+
+.sub-container{
+    display:flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+
+.dummy-con{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: auto;
+    width: 100%;
+}
+
+.sub{
+   padding-left: 10px;
+}
+
+.button-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    
+  }
+  .icon-alignment{
+   
+    height: 100%;
+  }
+  .empNameAlin{
+    float: left;
+    margin-left: -10px;
+    margin-bottom: -9px;
+  }
+
+  .emailAlin{
+    float: left;
+    margin-left: -10px;
+    margin-bottom: -6px;
+  }
+  .emailSpace{
+    margin-top:-20px;
+  }
+//   .mt-3 {
+//     color: red;
+//     text-shadow: 0 0 0 #2196f3;
+  
+//     &:focus {
+//         outline: none;
+//     }
+//   }
+
+  .demo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .edcon{
+    margin-top:2%;
+    margin-right:2%;
+    display: flex;
+    flex-direction: row;
+  }
+  @media screen and (max-width:768px){
+
+    .edcon{
+      margin-top:2%;
+      margin-right:2%;
+      display: flex;
+      flex-direction:row;
+      
+    }
+  }

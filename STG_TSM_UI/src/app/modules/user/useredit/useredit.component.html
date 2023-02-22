@@ -1,0 +1,166 @@
+<div class="w-full">
+    <!-- View mode -->
+    <ng-container *ngIf="!editMode && employee != null && !assignMode">
+        <div class="flex flex-row justify-between">
+            <button class="md:mt-2 mt-2 sm:ml-2 sm:mt-2 ml-1 md:ml-2" *ngIf="!editMode && !assignMode" mat-flat-button (click)="back()"
+                [matTooltip]="'Back'">
+                <mat-icon matPrefix class="sm:flex icon-size-4" [svgIcon]="'heroicons_solid:chevron-left'">
+                </mat-icon>
+            </button>
+            <div class="flex md:flex-row flex-row sm:flex-row">
+                <button class="md:mt-2 md:ml-60 md:mr-2 mt-2 mr-2 sm:mr-2 sm:mt-2 w-40 md:w-50 text-sm md:text-md" mat-stroked-button (click)="assign()"
+                    *ngIf="employee.projectAssignments.length!=0                        ">
+                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                    <span >Assign New Project</span>
+                </button>
+                <button class="mt-2 md:ml-2 md:mr-2 mr-2 sm:mr-2 w-15 md:w-20 text-sm md:text-md" mat-stroked-button (click)="toggleEditMode(true)"
+                    *ngIf="!(employee.employeeId === presentEmployeeId)">
+                    <mat-icon class="icon-size-5"  [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                    <span>Edit</span>
+                </button>
+            </div>
+        </div>
+        <!-- Contact -->
+        <div class="relative flex flex-col items-center">
+            <div class=" flex flex-col w-full ">
+                <!-- Actions -->
+                <div class="dummy-con">
+                    <!-- Name -->
+                    <div class="pl-2 mb-0 md:mb-0 md:mt-0 mt-0 sm:mt-0 sm:mb-0">
+                        <h1 class=" text-2xl font-bold truncate text-primary-600">{{employee.employeeName}}</h1>
+                        <h1 class=" text-1xl  ">{{employee.email}}</h1>
+                    </div>
+                    <!-- <div class="pr-3 mt-2">
+                        <button mat-stroked-button (click)="toggleEditMode(true)"
+                            *ngIf="!(employee.employeeId === presentEmployeeId)" class="mr-2">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                            <span class="ml-2">Edit</span>
+                        </button>
+                    </div> -->
+                </div>
+                <div>
+                    <app-tasklist></app-tasklist>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Edit mode -->
+    <ng-container *ngIf="editMode">
+        <button class="md:mt-2 mt-2 md:ml-2 ml-1" *ngIf="editMode && !assignMode" mat-flat-button (click)="back()"
+            [matTooltip]="'Back'">
+            <mat-icon matPrefix class="sm:flex icon-size-5" [svgIcon]="'heroicons_solid:chevron-left'">
+            </mat-icon>
+        </button>
+        <div class="w-full">
+            <form [formGroup]="employeesForm">
+                <!-- Name -->
+                <div class="">
+                    <mat-form-field class="fuse-mat-no-subscript w-full pl-5 pr-5" appearance="Clear">
+                        <mat-icon matPrefix class="flex icon-size-5 mr-5" [svgIcon]="'heroicons_outline:user'">
+                        </mat-icon>
+                        <span class="empNameAlin">Name: {{this.employee.employeeName}}</span>
+                        <input class="empNameAlin" matInput hidden [formControlName]="'employeeName'" [readonly]="true"
+                            [spellcheck]="false" required />
+                    </mat-form-field>
+                </div>
+                <div class="mt-1" class="emailSpace">
+                    <mat-form-field class="fuse-mat-no-subscript w-full pl-5 pr-5" appearance="Clear">
+                        <mat-icon matPrefix class="flex icon-size-5 mr-5 mt-2">portrait</mat-icon>
+                        <span class="empNameAlin">Role: {{this.employee.empRole}}</span>
+                        <input class="empNameAlin" matInput hidden [formControlName]="'role'" [readonly]="true"
+                            [spellcheck]="false" required />
+                    </mat-form-field>
+                </div>
+
+
+                <div class="mt-1" class="emailSpace">
+                    <mat-form-field class="fuse-mat-no-subscript w-full pl-5 pr-5" appearance="Clear">
+                        <mat-icon matPrefix class="flex icon-size-5 mr-5 mt-2" [svgIcon]="'heroicons_outline:mail'">
+                        </mat-icon>
+                        <span class="empNameAlin">Email: {{this.employee.email}}</span>
+                        <input matInput class="emailAlin " hidden [formControlName]="'emailId'" [readonly]="true"
+                            [spellcheck]="false" required />
+
+                    </mat-form-field>
+                </div>
+
+                <div class="md:flex flex-row md:mr-5">
+                    <mat-form-field class="fuse-mat-no-subscript ml-5 mr-0 w-80" appearance="outline">
+                        <mat-label>Reset Password</mat-label>
+                        <input (keydown.enter)="prevent($event)" (focus)="focusMethod()" (blur)="blurMethod()"
+                            id="password" matInput type="password" [formControlName]="'password'" #passwordField>
+                        <button mat-icon-button type="button"
+                            (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                            matSuffix>
+                            <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'password'"
+                                [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                            <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'"
+                                [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                        </button>
+                        <div *ngIf="blurPass || blurPass1 ">
+                            <app-password-meter [password]="this.employeesForm.value.password"></app-password-meter>
+                        </div>
+                        <mat-error *ngIf="!employeesForm.controls['password'].valid && !(blurPass || blurPass1)">
+                            Password Invalid
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="fuse-mat-no-subscript ml-5 mr-0 w-80" appearance="outline">
+                        <mat-label>Confirm Password</mat-label>
+                        <input (keydown.enter)="prevent($event)" id="confirmPassword" matInput type="password"
+                            (blur)="focusMethod1()" (blur)="blurMethod1()" [formControlName]="'confirmPassword'"
+                            #passwordField2>
+                        <button mat-icon-button type="button"
+                            (click)="passwordField2.type === 'password' ? passwordField2.type = 'text' : passwordField2.type = 'password'"
+                            matSuffix>
+                            <mat-icon class="icon-size-5" *ngIf="passwordField2.type === 'password'"
+                                [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                            <mat-icon class="icon-size-5" *ngIf="passwordField2.type === 'text'"
+                                [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                        </button>
+                        <mat-error *ngIf="!employeesForm.controls['confirmPassword'].valid">
+                            Repeat the same password
+                        </mat-error>
+                    </mat-form-field>
+                    <div>
+                        <mat-icon class="mt-4 mr-5 icon"
+                            *ngIf="employeesForm.value.password === employeesForm.value.confirmPassword && employeesForm.value.password.length > 0 ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                class="bi bi-check bg-green-500 text-neutral-50 broder-round" viewBox="0 0 16 16">
+                                <path
+                                    d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+                            </svg>
+                        </mat-icon>
+                        <mat-icon class="mt-4 mr-5 icon"
+                            *ngIf="employeesForm.value.password != employeesForm.value.confirmPassword && employeesForm.value.confirmPassword.length > 0 ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                class="p-1 bi bi-x bg-red-800 text-neutral-50 broder-round" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                            </svg>
+                        </mat-icon>
+                    </div>
+
+                </div>
+                <div class="button-container mb-0  mt-0">
+                    <button class="ml-auto mr-2" (click)="cancel()" mat-button>
+                        Cancel
+                    </button>
+                    <button type="submit" mat-flat-button color="primary" [disabled]="!employeesForm.valid"
+                        (click)="onSubmit()">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </ng-container>
+
+    <!-- <div *ngIf="assignMode">
+        <button mat-flat-button (click)="backToHome(false)">
+            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:chevron-left'"></mat-icon>
+        </button>
+        <app-project-assignment></app-project-assignment>
+    </div> -->
+
+</div>

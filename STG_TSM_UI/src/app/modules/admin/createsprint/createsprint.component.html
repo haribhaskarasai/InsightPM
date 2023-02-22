@@ -1,0 +1,72 @@
+
+<div class="flex flex-0 items-center justify-between h-16 w-300 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+  <div class="text-lg font-medium">Add Sprint</div>
+  <button
+      mat-icon-button
+      (click)="taskView()" 
+      [tabIndex]="-1">
+      <mat-icon
+          class="text-current"
+          [svgIcon]="'heroicons_outline:x'"></mat-icon>
+  </button>
+</div>
+<div class="example-container">
+  <form [formGroup]="sprintForm" autocomplete="off">
+    <div class="md:flex flex-row justify-between mt-0">
+        <div class="w-full">
+          
+          <mat-form-field class="full-width w-full" appearance="outline">
+            <mat-label>Sprint Name</mat-label>
+            <input (keydown.enter)="prevent($event)" (keydown)="duplicateSprintName()" (keyup)="duplicateSprintName()"  formControlName="sprintName" autocomplete="off" matInput [type]="'text'" required />
+            <mat-error *ngIf="!sprintForm.controls['sprintName'].valid">
+              SprintName is required
+            </mat-error>
+          </mat-form-field>
+      </div>
+      <mat-form-field class="full-width w-full" appearance="outline">
+        <mat-label>Sprint Description</mat-label>
+        <textarea  rows="1" formControlName="sprintDescription" autocomplete="off" matInput [type]="'text'"></textarea>
+        <mat-error *ngIf="!sprintForm.controls['sprintDescription'].valid">
+          Description is requried
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="md:flex flex-row justify-between mt-0 mb-0">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Start Date</mat-label>
+        <input (keydown.enter)="prevent($event)" (dateChange)="duplicateSprint()" matInput formControlName="startDate" placeholder="Start Date" [matDatepicker]="picker1"/>
+        <!-- <mat-hint>MMMM DD, YYYY</mat-hint> -->
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>End Date</mat-label>
+        <input (keydown.enter)="prevent($event)" (dateChange)="duplicateSprint()"   matInput [min]="sprintForm.value.startDate" formControlName="endDate" placeholder="End Date" [matDatepicker]="picker2" />
+        <mat-datepicker-toggle  matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker  #picker2 ></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <!-- <div *ngIf="sprintForm.valid && existsSprints ">
+        <h1>Sprint {{sprintName}} already exist </h1>
+    </div> -->
+    
+    <div *ngIf="existsSprintsName">
+      <h1 class="text-red-600">*{{sprintName}} already exist </h1>
+    </div>
+    <div *ngIf="checkDate">
+      <h1 class="text-red-600 pt-2">*Same Sprint period already exist for this Project and Application.</h1>
+      <h1 class="text-red-600 pt-2">Do you Still want to proceed? </h1>
+    </div>
+    <div class="button-container mb-0">
+      <button class="ml-auto" (click)="taskView()" mat-button>
+        Cancel
+    </button>
+      <button type="submit"  mat-flat-button color="primary" [disabled]="!sprintForm.valid"  (click)="save()">
+        Save
+      </button>
+      
+    </div>
+  </form>
+</div>

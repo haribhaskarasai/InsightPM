@@ -1,0 +1,39 @@
+  .full-width{
+    width: 85%;
+    padding: 8px;
+    @screen xs {
+      width: 100%;
+    }
+    @screen sm {
+      width: 100%;
+    }
+    @screen md {
+      width: 100%;
+    }
+  }
+  
+  
+  .example-container{
+    padding: 10px 40px 10px; 
+  }
+
+  .button-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    
+  }
+  
+  .flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-bottom: 30px;
+   }
+  
+   .text-center{
+    margin-top: 30px;
+  }
+  

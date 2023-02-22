@@ -1,0 +1,69 @@
+.mat-row:hover {
+  background-color: rgb(202, 209, 202);
+}
+
+.mat-row:nth-child(even) {
+  background-color: rgb(252, 248, 248);
+}
+
+.mat-header-cell,
+.mat-row {
+  min-height: 5px;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  margin-right: 30px;
+  margin-bottom: 30px;
+}
+
+.mat-cell {
+  font-size: 10pt;
+}
+
+
+
+
+
+
+  .table-responsive{
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    // .mat-table {
+    //     width: 100%;
+    //     max-width: 100%;
+    //     margin-bottom: 1rem;
+    //     display: table;
+    //     border-collapse: collapse;
+    //     margin: 0px;
+    // }
+    // .mat-row,
+    // .mat-header-row {
+    //     display: table-row;
+    // }
+    // .mat-cell,
+    // .mat-header-cell {
+    //     word-wrap: initial;
+    //     display: table-cell;
+    //     padding: 0px 5px;
+    //     line-break: unset;
+    //     width: auto;
+    //     white-space: nowrap;
+    //     overflow: hidden;
+    //     vertical-align: middle;
+    // }
+ }
+
+
+
+// .height{
+//   height: 64px !important;
+// }
+
+// ::ng-deep.tr.mat-row{
+//   min-height: 10px !important;
+
+// }

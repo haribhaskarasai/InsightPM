@@ -1,0 +1,62 @@
+.container{
+    display:flex;
+    flex-direction: row;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+
+.sub-container{
+    display:flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+
+.button-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    
+  }
+  .broder-round{
+    border-radius: 50%;
+  }
+  .icon{
+    height: 40px;
+    width: 40px;
+  }
+  .focus-change{
+    display: none;
+
+  }.focus-change:hover{
+    display: block;
+  }
+  .emAlign{
+    margin-left: -10px;
+    float: left;
+    margin-bottom: -9px;
+  }
+  .emailAlign{
+    margin-left: -10px;
+    float: left;
+    margin-bottom: -7px;
+  }
+  .emSpace{
+margin-top:-20px;
+  }
+  .emSpace1{
+    margin-bottom:-30px
+  }
+
+  // .mt-3{
+  //     -webkit-tap-highlight-color: transparent;
+  //     -webkit-touch-callout: none;
+  //     -webkit-user-select: none;
+  //     -khtml-user-select: none;
+  //     -moz-user-select: none;
+  //     -ms-user-select: none;
+  //     user-select: none;
+  // }

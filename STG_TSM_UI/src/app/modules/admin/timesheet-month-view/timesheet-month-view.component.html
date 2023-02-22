@@ -1,0 +1,138 @@
+<div class="flex flex-col p-3 pl-1 pt-0 w-full">
+    <div class="flex  flex-wrap  md:justify-between  md:items-center whitespace-nowrap">
+        <div class="flex flex-row">
+            <div class="ml-2 mb-1 mt-2 font-medium font-bold">Period:</div>
+
+            <button mat-icon-button class="arrow" mwlCalendarPreviousView [view]="'month'" [(viewDate)]="viewDate"
+                (viewDateChange)="selectedDay = {date:$event};onViewDateChange($event)" aria-label="Previous">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5" [matTooltip]="'Previous'">
+                    <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                  </svg>      
+            </button>
+
+            <div class="p-2  w-32 text-center font-semibold tracking-tight">
+                {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}
+            </div>
+
+            <button mat-icon-button class="arrow" mwlCalendarNextView [view]="'month'" [(viewDate)]="viewDate"
+                (viewDateChange)="selectedDay = {date:$event};onViewDateChange($event)" aria-label="Next">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5" [matTooltip]="'Next'">
+                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                  </svg>
+                  
+            </button>
+        </div>
+    </div>
+    <!-- Home -->
+
+
+    <div class="flex flex-wrap">
+        <div class="flex flex-col min-w-56 max-w-160 w-full p-2 pt-1  rounded-xl overflow-hidden">
+            <mwl-calendar-month-view [weekStartsOn]="1" [cellTemplate]="monthCellTemplate" [viewDate]="viewDate"
+                [events]="events" [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen" class=" bg-green-200"
+                (dayClicked)="dayClicked($event.day)" (eventClicked)="editEvent( $event.event)"
+               
+                (beforeViewRender)="beforeMonthViewRender($event)">
+            </mwl-calendar-month-view>
+            <ng-template #monthCellTemplate class="cal-day-cell" let-day="day" let-locale="locale"
+                let-tooltipPlacement="tooltipPlacement" let-highlightDay="highlightDay"
+                let-unhighlightDay="unhighlightDay" let-eventClicked="eventClicked"
+                let-tooltipTemplate="tooltipTemplate" let-tooltipAppendToBody="tooltipAppendToBody"
+                let-tooltipDelay="tooltipDelay">
+                <div class="flex flex-col justify-between  m-1 mat-elevation-z3 cal-cell-top"
+                    [ngClass]="{'sun':((day.date | date:'EEEE') =='Sun')}">
+                
+                    <div class="flex items-center justify-between " >
+                        <span 
+                        *ngIf="calendarWorkingHours.get(day.date| date:'YYYY-MM-dd')!=null"
+                            class="ml-1 mt-1 md:text-md sm:text-sm text-xs text-green-600
+                            font-bold tracking-tight leading-none" [matTooltip]="'Total Hours'">
+                           {{calendarWorkingHours.get(day.date| date:'YYYY-MM-dd')}} 
+                           <!-- 12:55 -->
+                        </span>
+                        
+                        <span  *ngIf="(day.date | date:'YYYY-MM-dd') >= (monthStartDate | date:'YYYY-MM-dd' )
+                            && (day.date | date:'YYYY-MM-dd') <= (monthEndDate| date:'YYYY-MM-dd') &&( calendarWorkingHours.get(day.date| date:'YYYY-MM-dd')==null)"
+                        class="ml-1 mt-1 md:text-md sm:text-sm text-xs text-primary-400
+                        font-bold tracking-tight leading-none">
+                        0
+                        </span>
+                    <span   *ngIf="!((day.date | date:'YYYY-MM-dd') >= (monthStartDate | date:'YYYY-MM-dd' )
+                        && (day.date | date:'YYYY-MM-dd') <=(monthEndDate| date:'YYYY-MM-dd')) && (calendarWorkingHours.get(day.date| date:'YYYY-MM-dd')==null)"
+                    class="ml-1 mt-1 md:text-md sm:text-sm text-xs text-white
+                    font-bold tracking-tight leading-none">
+                    -
+                </span>
+                    <!-- <span [matTooltip]="'Total Hours'"  *ngIf="
+                     (day.date > sprint.startDate && day.date < sprint.endDate) "
+                        class="ml-1 mt-1 text-lg sm:text-lg text-accent-300
+                        font-bold tracking-tight leading-none">
+                        0
+                    </span> -->
+                        <!-- <span [matTooltip]="'Weekly Total Hours'"
+                            *ngIf="((day.date | date:'EEEE') ==  'Sunday') && day.events.length > 0"
+                            class="mr-1 mt-1 totalweekHours  text-3xl sm:text-2xl text-primary-400 font-bold tracking-tight leading-none">
+                            40</span>
+                        <span [matTooltip]="'Weekly Total Hours'"
+                            *ngIf="((day.date | date:'EEEE') ==  'Sunday') && day.events.length == 0"
+                            class="mr-1 mt-1 totalweekHours  text-3xl sm:text-2xl text-primary-400 font-bold tracking-tight leading-none">
+                            40</span> -->
+                    </div>
+                    <!-- <div class="flex justify-between  items-center p-1" *ngIf="(day.events | eventHolidayType)== 'L'" [matTooltip]="'Leave'">
+                        <div  class="mt-0 ml-1 text-xs font-small cal-day-badge"> {{((day.events | eventHolidayType)== 'L')?'FL':''}}</div>
+                    </div> -->
+                    <div class="flex items-center  justify-between ">
+                        <div>
+                        </div>
+                        <span class="cal-day-number">
+                            {{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template #openDayEventsTemplate let-events="events" let-eventClicked="eventClicked" let-isOpen="isOpen">
+                <div class="w-full flex flex-row" *ngIf="isOpen">
+                    <div *ngFor="let event of events; trackBy:trackByEventId" mwlDraggable
+                        [class.cal-draggable]="event.draggable" dragActiveClass="cal-drag-active"
+                        [dropData]="{event: event}" [dragAxis]="{x: event.draggable, y: event.draggable}"
+                        class="w-full flex flex-row mat-elevation-z3">
+                        
+                        <div  class=" pb-0 w-full flex flex-row">
+                            <!-- <div class="cal-event"
+                            [ngClass]="{'accent':!((event.holidayType)>0)}">
+                        </div> -->
+                            <div class="p-3 text-m mt-2  font-bold tracking-tight leading-none">{{event.date |
+                                date:'mediumDate'}}</div>
+
+                            <div class="p-3 text-m mt-2  font-bold tracking-tight leading-none">Regular Hours:</div>
+
+                            <div
+                                class="p-3 pl-1 mt-2 text-m w-13  font-bold tracking-tight leading-none text-primary-500">
+                                <input matInput [(ngModel)]='event.workedHours' type="number" pattern="\d*"
+                                    maxlength="2">
+                            </div>
+                            <div *ngIf="false" class="p-3 text-m  mt-2 font-bold tracking-tight leading-none">Additional Hours:</div>
+                            <div *ngIf="false"
+                                class="p-3 pl-1 text-m  mt-2  w-13  font-bold tracking-tight leading-none text-primary-500">
+                                <input matInput [(ngModel)]='event.additionalHours' type="number" pattern="\d\d"
+                                    maxlength="2">
+                            </div>
+                            <div class="p-3  ">
+                            <div title="Save Time" class="flex w-15 text-white-800 bg-primary-500  items-center  justify-between leading-9 rounded-full cursor-pointer"
+                            (click)="saveTimeData(event)" >
+                            <span class="ml-3 text-md font-bold truncate">Save</span>
+                           
+                        </div>
+                            </div>
+                            <div *ngIf="false" class="p-2 ">
+                                <mat-icon class="icon-size-6 ml-4" (click)="cancelEditTimeData(event);"
+                                    [svgIcon]="'mat_outline:cancel'" [matTooltip]="'cancel edit'">
+                                </mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+          
+        </div>
+    </div>
+</div>

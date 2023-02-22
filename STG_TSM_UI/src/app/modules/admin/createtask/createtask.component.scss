@@ -1,0 +1,31 @@
+::ng-deep .mat-select-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.option-custom{
+    border-style: solid;
+    border-color: aqua;
+    border-width: 2px;
+}
+.svg-custom{
+    border-style: solid;
+    border-color: brown;
+    border-width: 1px;
+}
+.para-custom{
+    border-style: solid;
+    border-color: blue;
+    border-width: 2px;
+    
+}
+
+.center-button{
+    align-items:center !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+
+

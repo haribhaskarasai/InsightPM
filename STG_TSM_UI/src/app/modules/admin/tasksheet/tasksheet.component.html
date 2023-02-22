@@ -1,0 +1,394 @@
+<div class="flexing bg-card w-full">
+    <!-- flex flex-auto w-full p-2 bg-card -->
+    <!-- Column -->
+    <div class="lg:flex flex-col  border-r md:w-3/5 xs:full">
+        <span class="hidden md:block p-1 text-2xl font-extrabold xs:text-m  md:text-left mb-2 md:mb-0 ">Effort Book</span>
+        <span class="md:hidden font-extrabold text-center ml-5 timesheet-p">Effort Book</span>
+        <form [formGroup]="projectForm" (ngSubmit)="onSearch()">
+           
+            <div class="flex items-start md:flex-row xs:pl-2 p-1">
+
+                <mat-form-field class="text-sm fuse-mat-no-subscript md:w-3/6 xs:w-1/2 xs:m-auto xs:p-3 md:p-0">
+                    <mat-label class="ml-1">Project and Application</mat-label>
+                    <mat-select (selectionChange)="onChangeProject($event.value)" required formControlName="project"
+                        [disabled]="project.length == 0" 
+                        [matTooltip]="project.length == 0 ? 'No Project Assigned' : ''">
+                        <div *ngFor="let project of project">
+                            <mat-option [value]="project" style="height: auto;">
+                                <span>{{project.projectNickName}}</span> - <span class="font-bold">{{project.applicationNickName}}</span>  </mat-option>
+
+                        </div>
+                        <div *ngIf="project.length === 0">
+                            <mat-option>No Projects Assigned</mat-option>
+                        </div>
+                    </mat-select>
+                    <mat-icon matPrefix class="icon-size-5  hidden md:block" [svgIcon]="'feather:file-text'"></mat-icon>
+                </mat-form-field>
+
+                <mat-form-field class="text-sm fuse-mat-no-subscript md:ml-2 md:w-2/6 xs:w-1/2 xs:m-auto xs:p-3 md:p-0">
+                    <mat-label class="ml-1">Sprint</mat-label>
+                    <mat-select (selectionChange)="onChangeSprint($event)" required formControlName="sprint"
+                        [disabled]="projectForm.controls['project'].invalid"
+                        [matTooltip]="projectForm.controls['project'].invalid ==true ? 'Select Project and Choose Sprint': ''">
+                        <mat-option *ngFor="let sprint of sprints" [value]="sprint" >{{sprint.sprintName}} -
+                            ({{sprint.startDate | date:'MMM d'}}-{{sprint.endDate | date:'MMM d'}})
+                        </mat-option>
+                        <mat-option *ngIf="sprints.length === 0">No Sprints</mat-option>
+                        <mat-option class="bg-primary text-on-primary" (click)="openDialog()">
+                            <button>
+                                <mat-icon class="text-white" [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                <span class="ml-2">Add Sprint</span>
+                            </button>
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix class="icon-size-5 hidden md:block" [svgIcon]="'heroicons_outline:paper-clip'">
+                    </mat-icon>
+                </mat-form-field>
+
+                <div class="flex flex-auto justify-end md:p-3 mt-4 p-3 md:mt-4 md:w-2/6 m-auto overflow-hidden items-end">
+                    <div class="hidden md:block">
+                        <button (click)="onSearch()" mat-flat-button [color]="'primary'"
+                            [disabled]="!projectForm.valid || isPresent ">
+                            Search
+                        </button>
+                    </div>
+                    <div class="md:hidden pt-5">
+                        <button   (click)="onSearch()"   [disabled]="!projectForm.valid || isPresent ">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                              </svg>                              
+                         </button>
+                    </div>
+
+                    <!-- <button  (click)="clearSearch()" [matTooltip]="'Clear'" *ngIf="projectForm.valid  ">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-10 h-10">
+                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                          </svg>
+                    </button> -->
+                </div>
+
+            </div>
+            <!-- <div *ngIf="project.length === 0" class="font-bold ml-2 text-md text-red-500">
+            </div> -->
+        </form>
+        <ng-container>
+            <app-timesheet-month-view [parentApi]="getParentApi()" [timeSheetType]="'stg'" [viewDate]="viewDate"
+                class="mt-2 w-full border-t">
+            </app-timesheet-month-view>
+        </ng-container>
+        <div class="flex justify-around  justify-between rounded-xl overflow-hidden text-center">
+            <div class="flex flex-col items-center mt-2 ml-4">
+                <div class="text-2xl sm:text-2xl font-bold tracking-tight leading-none text-center text-black-500">
+                    {{tragetWorkingHours}} <span class="text-md">hrs</span></div>
+                <div class="text-md font-medium text-black-600 dark:text-black-500">
+                    Target Hours for current month</div>
+            </div>
+            <div class="flex flex-col items-center mt-2 ml-4">
+                <div class="text-2xl sm:text-2xl font-bold tracking-tight leading-none text-center text-green-500">
+                    {{totalWorkingHours}} <span class="text-md">hrs</span> </div>
+                <div class="text-md font-medium text-green-600 dark:text-green-500">
+                    Worked Hours for current month</div>
+            </div>
+
+            <div class="flex flex-col items-center mt-2 ml-4">
+                <div class="text-2xl sm:text-2xl font-bold tracking-tight leading-none text-black-500"
+                    [hidden]="disablehours">
+                    {{targetHours}} <span class="text-md">hrs</span> </div>
+                <div class="text-md font-medium text-black-600 dark:text-black-500" [hidden]="disablehours">
+                    Target Hours for Selected Sprint</div>
+            </div>
+            <div class="flex flex-col items-center mt-2 ml-4">
+                <div class="text-2xl sm:text-2xl font-bold tracking-tight leading-none text-green-500"
+                    [hidden]="disablehours">
+                    {{workingHours}} <span class="text-md">hrs</span></div>
+                <div class="text-md font-medium text-green-600 dark:text-green-500" [hidden]="disablehours">
+                    Worked Hours for Selected Sprint</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col  md:w-5/5 xs:w-full">
+
+        <div class="flex flex-col ">
+            <div class="xs:flex xs:flex-row flex-0 xs:justify-between py-1 px-2 md:px-8">
+
+                <div class="flex items-center ml-auto">
+                    <!-- <div class="tracking-tight text-center">
+                            <mat-form-field class="mr-1 ml-2 mb-1 fuse-mat-dense fuse-mat-no-subscript w-60">
+
+                                <input matInput class="text-sm text-slate-400 font-light"
+                                   [autocomplete]="'off'"
+                                    [placeholder]="'Search'">
+                                <mat-icon class="text-slate-200" svgIcon="feather:search"></mat-icon>
+                            </mat-form-field>
+
+                        </div> -->
+                    <div class="md:mr-5 md:ml-5" [hidden]="searchDisable">
+                        <div class="group inline-flex items-center -ml-4 
+                            rounded cursor-pointer" (click)="openDialogUser()">
+                            <div>
+                                <button class=" mt-0" mat-flat-button [color]="'primary'">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                                    <span class="ml-2">Add User Story</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="group inline-flex items-center -ml-4 py-1 px-4 
+                        rounded cursor-pointer" (click)="taskDetails()">
+                            <button class="ml-5 mr-5 px-1 sm:px-4 " mat-flat-button [color]="'primary'">
+                                <mat-icon class="hidden xs:block icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'">
+                                </mat-icon>
+                                <span class="ml-2">Add Effort</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Products list -->
+            <div class="flex flex-col ">
+
+                <ng-container>
+                    <ng-container>
+                        <div class="grid overflow-y-auto">
+                            <!-- ---Header--- -->
+                            <div class="inventory-grid z-10 h-12 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-white bg-primary dark:bg-black dark:bg-opacity-5"
+                                matSort>
+                                <div class=" md:block" [mat-sort-header]="'userstoryName'"
+                                    (click)="getAllTaskUserstoryName('userstory_name')">
+                                    User<span class="demo">.</span>Story
+                                </div>
+                                <div class=" md:block" [mat-sort-header]="'date'"
+                                    (click)="getAllTaskUserstoryName('date')">
+                                    Date
+                                </div>
+                                <div class=" sm:block" [mat-sort-header]="'taskName'"
+                                    (click)="getAllTaskUserstoryName('task_name')">
+                                    Activity
+                                </div>
+                                <div class="md:block " [mat-sort-header]="'efforts'"
+                                    (click)="getAllTaskUserstoryName('efforts')">
+                                    Effort<span class="demo">.</span>Spent
+                                </div>
+                            </div>
+                            <!-- Rows -->
+                            <ng-template #rowDetailsTemplate>
+                                <div class="inventory-grid">
+                                    <div class="flex p-4 w-full">
+                                        <!-- Selected product form -->
+
+                                        <div class="flex flex-col w-full">
+
+                                            <form class="flex justify-between items-center flex-row w-full"
+                                                [formGroup]="activityForm">
+                                                <mat-form-field class="text-sm fuse-mat-no-subscript w-1/6 ml-2">
+                                                    <mat-select required formControlName="userstoryId" [placeholder]="'User Story '">
+                                                        <mat-option *ngFor="let act of userstories"
+                                                            [value]="act.userstoryId">
+                                                            {{act.userstoryName}}
+                                                        </mat-option>
+                                                        <mat-option *ngIf="userstories.length === 0">
+                                                            No User Stories
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field class="text-sm fuse-mat-no-subscript w-3/12 ml-1">
+                                                    <input formControlName="date" matInput [(ngModel)]="selectedDate"
+                                                        [matDatepicker]="effStartDatepicker"
+                                                        [min]="selectedSprintStartDate" [max]="selectedSprintEndDate"
+                                                        [matDatepickerFilter]="myDateFilter" [placeholder]="'Date'">
+                                                    <mat-datepicker-toggle matSuffix [for]="effStartDatepicker">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #effStartDatepicker></mat-datepicker>
+                                                </mat-form-field>
+                                                <mat-form-field class="text-sm fuse-mat-no-subscript w-1/5 ml-1">
+                                                    <mat-select formControlName="activity" required [placeholder]="'Activity'">
+                                                        <mat-option>
+                                                        <ngx-mat-select-search  placeholderLabel="Search ..." noEntriesFoundLabel="'No Matching Found'"  [formControl]="activityFilterCtrl"></ngx-mat-select-search>
+                                                      </mat-option>
+                                                        <mat-option *ngFor="let act of filteredactivity | async"
+                                                            [value]="act.description">
+                                                            {{act.description}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field class="text-sm fuse-mat-no-subscript w-1/5 ml-1">
+                                                    <mat-select  formControlName="efforts" [placeholder]="'Duration'">
+                                                        <mat-option *ngFor="let option of hrs" [value]="option">{{option.split(":")[0]+":"+option.split(":")[1]}} hrs</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                
+                                                <div class="flex items-center w-1/6">
+
+                                                    <mat-icon [matTooltip]="'Add'" *ngIf="activityForm.valid && activityForm.value.efforts > '00:00'"
+                                                        class="text-green-600 ml-3 cursor-pointer icon-size-6"
+                                                        (click)="saveActivity()">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                            fill="currentColor" class="w-5 h-5">
+                                                            <path fill-rule="evenodd"
+                                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </mat-icon>
+
+                                                    <mat-icon (click)="cancel()" [matTooltip]="'Cancel'"
+                                                        class="text-gray-400 ml-1 cursor-pointer icon-size-6"
+                                                        [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-container>
+
+                                <ng-container name="tasks" ngDefaultControl
+                                    *ngIf=" count!=0 && tasks.length != 0 || viewDetail; else noTasks">
+                                    <div class="grid">
+                                        <ng-container *ngIf="viewDetail &&  !searchDisable">
+                                            <ng-container *ngTemplateOutlet="rowDetailsTemplate">
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+                                    <ng-container>
+                                        <ng-container *ngFor="let task of tasks">
+                                            <div class="inventory-grid h-12 cursor-pointer grid items-center gap-4
+                                                    py-3 px-6 md:px-8 border-b" *ngIf="selectedTask != task">
+                                                <div class=" text-sm" matTooltip={{task.userstoryDescription}}>
+                                                    <span>
+                                                        {{task.userstoryName}}
+                                                    </span>
+                                                </div>
+                                                <div class=" text-sm">
+                                                    <span>
+                                                        {{task.date | date:'mediumDate'}}
+                                                    </span>
+                                                </div>
+                                                <div class=" text-sm overflow-hidden">
+                                                    <span>
+                                                        {{task.taskName}}
+                                                    </span>
+                                                </div>
+
+                                                <div class=" text-sm" [matTooltip]="'HH:MM'" >
+                                                    <span>
+                                                        {{task.efforts.split(":")[0] + ":" + task.efforts.split(":")[1]}} hrs
+                                                    </span>
+                                                </div>
+
+                                                <div [hidden]="searchDisable">
+                                                    <button class="min-w-10 ml-2 min-h-7 h-7 px-2 leading-6" mat-button
+                                                        [matTooltip]="'Edit'" mat-icon-button
+                                                        (click)="editDetail(task)">
+                                                        <mat-icon class="icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:pencil-alt'">
+                                                        </mat-icon>
+                                                    </button>
+                                                </div>
+                                                <div [hidden]="searchDisable">
+                                                    <button class="min-w-10 ml-2 min-h-7 h-7 px-2 leading-6" mat-button
+                                                        [matTooltip]="'Delete'" mat-icon-button
+                                                        (click)="openDelete(task)">
+                                                        <mat-icon class="icon-size-5" svgIcon="delete_sweep">
+                                                        </mat-icon>
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                            <div class="grid">
+                                                <ng-container *ngIf="selectedTask === task">
+                                                    <ng-container
+                                                        *ngTemplateOutlet="taskDetailsTemplate; context: {$implicit: task}">
+                                                    </ng-container>
+                                                </ng-container>
+                                            </div>
+                                        </ng-container>
+                                        <!-- No contacts -->
+
+                                    </ng-container>
+
+                                    <ng-template #taskDetailsTemplate>
+                                        <div class="inventory-grid w-full  py-1 md:px-5 md:px-6 ove">
+                                            <div class="flex pt-4">
+                                                <!-- Selected product form -->
+
+                                                <div class="flex flex-col w-full">
+                                                    <div class="flex items-center flex-row w-full">
+                                                        <div class="md:block text-sm w-1/5 ml-3">
+                                                            <span>
+                                                                {{selectedTask.userstoryName}}
+                                                            </span>
+                                                        </div>
+                                                        <div class=" md:block text-sm w-1/5">
+                                                            <span>
+                                                                {{selectedTask.date | date:'mediumDate'}}
+                                                            </span>
+                                                        </div>
+
+                                                        <form [formGroup]="updateActivityForm" class="flex">
+                                                            <mat-form-field
+                                                                class="text-sm fuse-mat-no-subscript w-3/25 mr-4">
+                                                                <mat-select required formControlName="activity"
+                                                                    [(ngModel)]="this.selectedTask.taskName">
+                                                                    <mat-option>
+                                                                        <ngx-mat-select-search  placeholderLabel="Search ..." 
+                                                                        noEntriesFoundLabel="'No Matching Found'" [formControl]="activityFilterCtrl"></ngx-mat-select-search>
+                                                                    </mat-option>
+                                                                    <mat-option *ngFor="let act of filteredactivity | async"
+                                                                        [value]="act.description">
+                                                                        {{act.description}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                            <mat-form-field
+                                                                class="fuse-mat-no-subscript flex-auto w-3/25">
+                                                                <mat-select  formControlName="efforts" required [(ngModel)]="this.selectedTaskEfforts">
+                                                                    <mat-option *ngFor="let option of hrs" [value]="option" >{{option.split(":")[0]+":"+option.split(":")[1]}} hrs</mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                            <div class="flex items-center">
+                                                                <mat-icon [matTooltip]="'Save'"
+                                                                *ngIf="updateActivityForm.valid"
+                                                                (click)="updateActivity()"
+                                                                class="text-green-600 ml-4 cursor-pointer icon-size-6">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 20 20" fill="currentColor"
+                                                                    class="w-5 h-5">
+                                                                    <path fill-rule="evenodd"
+                                                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z"
+                                                                        clip-rule="evenodd" />
+                                                                </svg>
+                                                            </mat-icon>
+                                                            <mat-icon (click)="cancel()" [matTooltip]="'Cancel'"
+                                                                class="text-gray-400 cursor-pointer icon-size-6"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+
+                                                            </div>
+                                                            
+                                                        </form>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </ng-container>
+
+                                <ng-template #noTasks>
+                                    <div
+                                        class="p-8 sm:p-16 border-t text-medium font-medium tracking-tight text-center">
+                                        There are no tasks!
+                                    </div>
+                                </ng-template>
+                            </ng-container>
+                        </div>
+                        <mat-paginator class="pagination" *ngIf="count !=0" [length]="count" (page)="change($event)"
+                            [pageSizeOptions]="[10,20,50]" aria-label="Select page of users">
+                        </mat-paginator>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

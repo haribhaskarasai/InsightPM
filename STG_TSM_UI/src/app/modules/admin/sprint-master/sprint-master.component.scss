@@ -1,0 +1,12 @@
+
+.task-grid {
+    @screen lg {
+        grid-template-columns:  150px 250px 100px 10px 150px 30px;
+    }
+}
+
+.timesheet-grid {
+    @screen lg {
+        grid-template-columns:  150px 250px 150px 100px;
+    }
+}

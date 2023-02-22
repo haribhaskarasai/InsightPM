@@ -1,0 +1,103 @@
+<div>
+    <button class="md:mt-2 mt-2 md:ml-2 ml-2 sm:ml-2 sm:mt-2" *ngIf="assignedProjectLength != 0" mat-flat-button (click)="back()" [matTooltip]="'Back'">
+        <mat-icon matPrefix class="sm:flex icon-size-4" [svgIcon]="'heroicons_solid:chevron-left'"></mat-icon>
+    </button>
+    <div class="text-center text-lg font-bold">Assign Project to Employee</div>
+
+
+    <form [formGroup]="projectAssignmentForm" #formDirective="ngForm"  (ngSubmit)="submitForm(projectAssignmentForm, formDirective)">
+        <div formArrayName="assignments"
+            *ngFor="let item of projectAssignmentForm.get('assignments')['controls']; let i = index;">
+            <fieldset class="border-2 m-3">
+                <legend class=" w-10 bg-primary text-center text-white rounded-full" *ngIf="assignedProjectLength == 0">{{i+1}}</legend>
+                <legend class=" w-10 bg-primary text-center text-white rounded-full" *ngIf="assignedProjectLength != 0">{{count+i+1}}</legend>
+                <div [formGroupName]="i">
+                    <div class="flex-content">
+                        <button class="text-end mt-3" (click)="removeItem(i)" *ngIf="i > 0">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'" [matTooltip]="'Remove'"></mat-icon>
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <mat-form-field class="fuse-mat-no-subscript md:w-60 w-80 md:mr-0 sm:mr-15" appearance="outline">
+                            <mat-label>Project</mat-label>
+                            <mat-select required formControlName="projects" [placeholder]="' Project '"
+                                (selectionChange)="onChangeProject($event.value,i)">
+                                <mat-option *ngFor="let project of projects" [value]="project.projectId" style="height: auto;">
+                                    {{project.projectNickName}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5 mr-5 ml-5"
+                                [svgIcon]="'feather:file-text'">
+                            </mat-icon>
+                        </mat-form-field>
+                        <mat-form-field class="fuse-mat-no-subscript md:w-60 md:ml-15  w-80" appearance="outline">
+                            <mat-label>Application</mat-label>
+                            <mat-select required formControlName="applications" [placeholder]="' Application '"
+                                (selectionChange)="checkProjectAssigned($event.value)">
+                                <mat-option *ngFor="let application of applications[i]"
+                                    [value]="application.applicationId" style="height: auto;">
+                                    {{application.applicationNickName}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5 mr-5 ml-5 "
+                                [svgIcon]="'feather:file-text'">
+                            </mat-icon>
+
+                        </mat-form-field>
+
+                        <mat-form-field class="fuse-mat-no-subscript md:w-60 md:mr-0 sm:mr-15 w-80" appearance="outline">
+                            <mat-label>Start Date</mat-label>
+                            <input matInput formControlName="startDate" placeholder=" Start Date "
+                                [matDatepicker]="picker1" />
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field class="fuse-mat-no-subscript md:w-60 md:ml-15 w-80" appearance="outline">
+                            <mat-label>End Date</mat-label>
+                            <input matInput formControlName="endDate" placeholder=" End Date "
+                                [min]="item.value.startDate" [matDatepicker]="picker2" />
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                        <div>
+                            <mat-radio-group class="fuse-mat-no-subscript" [color]="'primary'"
+                                [value]="'yes'" formControlName="billable">
+                                <mat-label class="text-lg md:ml-9 ml-2">Billable* </mat-label>
+                                <mat-radio-button class="mb-2 mr-2" [value]="'true'">
+                                    Yes
+                                </mat-radio-button>
+                                <mat-radio-button class="mb-2" [value]="'false'">
+                                    No
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    
+                </div>
+            </fieldset>
+
+
+        </div>
+        <div *ngIf="projectAssignmentForm.valid"
+            class="group inline-flex items-center mt-2 -ml-2 py-2 px-4 rounded cursor-pointer" (click)="addItem()">
+            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+            <span class="ml-2 font-medium text-secondary group-hover:underline">Add Aditional Project</span>
+        </div>
+        <mat-error *ngIf="project().errors">
+            Duplicates Found !!! Cannot add same application to same employee
+        </mat-error>
+        <mat-error *ngIf="check" class="ml-5"> Application Already Assigned</mat-error>
+        <div class="center-button flex items-center mt-2 sm:pr-12 sm:pl-7 dark:bg-transparent">
+            <button class="ml-auto mr-2" (click)="cancel()"  mat-button>
+                Cancel
+            </button>
+            <button type="submit" mat-flat-button class="button-container mb-0 mt-0" color="primary"
+                [disabled]="!projectAssignmentForm.valid || check" (click)="submit()">
+                Submit
+            </button>
+        </div>
+
+    </form>
+
+</div>

@@ -1,0 +1,30 @@
+.example-container > * {
+    width: 100%;
+  }
+  
+  .full-width{
+    padding-left: 20px;
+    //width: 80%;
+  }
+  
+  .button-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .flex {
+   display: flex;
+   flex-direction: row;
+   justify-content: end;
+   margin-bottom: 30px;
+  }
+  
+  .text-center{
+    margin-top: 30px;
+  }
+  .padding{
+    margin-left:15px !important;
+  }

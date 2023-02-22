@@ -1,0 +1,20 @@
+.profile{
+    cursor: pointer;
+}
+
+@media screen and (min-width:601px){
+    .nav-tittle-full{
+        display:block;
+    }
+    .nav-tittle-short{
+        display:none;
+    }
+}
+@media screen and  (max-width: 600px){
+    .nav-tittle-full{
+        display: none;
+    }
+    .nav-tittle-short{
+        display: block ;
+    }
+}

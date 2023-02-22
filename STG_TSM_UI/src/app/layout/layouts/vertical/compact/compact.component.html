@@ -1,0 +1,112 @@
+<!-- Loading bar -->
+<fuse-loading-bar></fuse-loading-bar>
+
+<!-- Navigation -->
+<fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [appearance]="'compact'"
+    [mode]="isScreenSmall ? 'over' : 'side'" [name]="'mainNavigation'" [navigation]="navigation.compact"
+    [opened]="!isScreenSmall">
+    <!-- Navigation header hook -->
+    <ng-container fuseVerticalNavigationContentHeader>
+        <!-- Logo -->
+        <div class="flex items-center justify-center h-20 mt-3 mb-4">
+            <img class="w-13 cursor-pointer"  src="assets/images/logo/IPM-Icon.png" alt="Logo image" (click)="userlist()">
+        </div>
+    </ng-container>
+</fuse-vertical-navigation>
+
+<!-- Wrapper -->
+<div class="flex flex-col flex-auto w-full min-w-0">
+
+    <!-- Header -->
+    <div
+        class="relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
+        <!-- Navigation toggle button -->
+        <button mat-icon-button (click)="toggleNavigation('mainNavigation')">
+            <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+        </button>
+        <div class="hidden md:block ml-4 text-lg font-semibold">InsightPM</div>
+        <div class="sm:block md:hidden ml-4 text-lg font-semibold">InsightPM</div>
+        <!-- Components -->
+        <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+            <!-- <languages></languages>
+            
+            <search [appearance]="'bar'"></search>
+            <shortcuts></shortcuts>
+            <messages></messages>
+            <notifications></notifications> -->
+            <!-- <button
+                class="lg:hidden"
+                mat-icon-button
+                (click)="quickChat.toggle()">
+                <mat-icon [svgIcon]="'heroicons_outline:chat-alt-2'"></mat-icon>
+            </button> -->
+            <fuse-fullscreen class="hidden md:block"></fuse-fullscreen>
+            <user></user>
+            <div class="grid-cols-1 fuse-vertical-navigation-item-title-wrapper">
+                <div class="fuse-vertical-navigation-item-title">
+                    <span class="text-sm font-medium">
+                      {{user.username | titlecase}}
+                    </span>
+                </div>
+                <ng-container>
+                    <!-- <div class="fuse-vertical-navigation-item-subtitle">
+                        <span class="text-xs font-normal">
+                            {{user.empRole}}
+                        </span>
+                    </div> -->
+                </ng-container>
+
+            </div>
+            <button mat-icon-button [matMenuTriggerFor]="userActions">
+                <span class="relative">
+                    <mat-icon svgIcon="feather:chevron-down"></mat-icon>
+                </span>
+
+            </button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex flex-col flex-auto">
+        <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
+             Otherwise, layout changes won't be registered and the view won't be updated! -->
+        <router-outlet *ngIf="true"></router-outlet>
+    </div>
+
+    <!-- Footer -->
+    <div
+        class="relative flex flex-0 items-center justify-between w-full h-8 px-4 md:px-6 z-49 border-t bg-card dark:bg-transparent print:hidden">
+        <span class="text-sm text-secondary">&copy; {{currentYear}} All Rights Reserved. Systems Technology Group,
+            Inc. (STG)</span>
+        <span class="text-sm text-secondary">Version - 0.3.20 </span>
+    </div>
+
+</div>
+<mat-menu [xPosition]="'before'" #userActions="matMenu">
+    <div mat-menu-item class="cursor-default">
+        <span class="flex flex-col leading-none">
+            <span>Signed in as</span>
+            <span class="mt-1.5 text-md font-bold">{{user.email}}</span>
+        </span>
+    </div>
+    <mat-divider class="profile my-2"></mat-divider>
+    <div mat-menu-item class="cursor-default" (click)="editprofile()">
+        <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+        <span >Profile</span> 
+    </div>
+    <!-- <button mat-menu-item>
+        <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
+        <span>Settings</span>
+    </button>
+    <button
+        mat-menu-item
+        [matMenuTriggerFor]="userStatus">
+        <mat-icon [svgIcon]="'heroicons_outline:dots-circle-horizontal'"></mat-icon>
+        <span>Status</span>
+    </button> -->
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item class="cursor-default" (click)="signOut()">
+        <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <span>Sign out</span>
+    </button>
+</mat-menu>

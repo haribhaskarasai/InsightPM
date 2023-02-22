@@ -1,0 +1,31 @@
+p {
+    font-family: Lato;
+  }
+  
+  .center-button{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    
+  }
+
+  .flex-content{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 10px;
+    margin-bottom: 20px;
+  }
+
+  .mat-option {
+    word-break: break-all;
+    white-space: inherit;
+    height: min-content;
+   }
+
+   .mat-select-panel .mat-optgroup-label, .mat-select-panel .mat-option{
+    height:7rem !important;
+   }
+ 

@@ -1,0 +1,36 @@
+.container{
+    display:flex;
+    flex-direction: row;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+
+.sub-container{
+    display:flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+
+.button-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    
+  }
+  .broder-round{
+    border-radius: 50%;
+  }
+  .icon{
+    height: 40px;
+    width: 40px;
+  }
+  .focus-change{
+    display: none;
+
+  }.focus-change:hover{
+    display: block;
+  }

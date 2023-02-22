@@ -1,0 +1,75 @@
+<div class="flex flex-0 items-center justify-between h-16 w-80% pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+  <div class="text-lg font-medium">Add User Story</div>
+  <button
+      mat-icon-button
+      (click)="close()"
+      [tabIndex]="-1">
+      <mat-icon
+          class="text-current"
+          [svgIcon]="'heroicons_outline:x'"></mat-icon>
+  </button>
+</div>
+<!-- <div class="flex items-center justify-end ">
+
+  <a mat-icon-button >
+      <mat-icon [svgIcon]="'heroicons_outline:x'" (click)="taskViews()"></mat-icon>
+  </a>
+</div> -->
+<div class="example-container" >
+  <form  [formGroup]="userForm" autocomplete="off">
+  <div class="flex flex-col md:flex-row sm:flex-row mr-4">
+    <div>
+      
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>User Story Id</mat-label>
+        <input (keydown.enter)="prevent($event)" (keydown)="duplicateSprintName()" (keyup)="duplicateSprintName()"  formControlName="userstoryId" autocomplete="off" matInput [type]="'text'" required />
+        <mat-error *ngIf="!userForm.controls['userstoryId'].valid">
+            User Story Id is required
+        </mat-error>     
+    </mat-form-field>
+    <div *ngIf="existsUserStoryName" class="padding pl-3" >
+      <p class="text-red-600">{{userstoryName}} already exist </p>
+    </div>
+    </div>
+      
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Description</mat-label>
+        <input (keydown.enter)="prevent($event)" formControlName="description" autocomplete="off" matInput [type]="'text'" required />
+        <mat-error *ngIf="!userForm.controls['description'].valid">
+         Description is required
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field class="full-width block md:hidden sm:hidden" appearance="outline">
+      <mat-label>Planned Efforts</mat-label>
+      <input (keydown.enter)="prevent($event)" formControlName="plannedEfforts" autocomplete="off" matInput [type]="'text'"/>
+     </mat-form-field>
+     
+     <mat-form-field class="full-width  block md:hidden sm:hidden" appearance="outline">
+      <mat-label>Estimated Story Point</mat-label>
+      <input (keydown.enter)="prevent($event)" formControlName="estimatedStoryPoints" autocomplete="off" matInput [type]="'text'" />  
+     </mat-form-field>
+  </div>
+
+  <div class="flex flex-col hidden md:flex-row md:block sm:flex-row sm:block mr-4">
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Planned Efforts</mat-label>
+      <input (keydown.enter)="prevent($event)" formControlName="plannedEfforts" autocomplete="off" matInput [type]="'text'"/>
+     </mat-form-field>
+     
+     <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Estimated Story Point</mat-label>
+      <input (keydown.enter)="prevent($event)" formControlName="estimatedStoryPoints" autocomplete="off" matInput [type]="'text'" />  
+     </mat-form-field>
+</div>
+<div class = "button-container lg:ml-0 -mt-6">
+  <button class="ml-auto mr-2" (click)="close()" mat-button>
+    Cancel
+  </button>
+  <button class="-mr-2" type="submit" mat-flat-button color="primary" [disabled]="!userForm.valid" (click)="save()">Save</button>
+ 
+</div>
+</form>
+</div>
+
+
+
